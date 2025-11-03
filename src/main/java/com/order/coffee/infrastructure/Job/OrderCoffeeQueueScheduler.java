@@ -48,7 +48,11 @@ public class OrderCoffeeQueueScheduler implements ApplicationRunner {
                         order.toStart();
                         orderCoffeeRepository.save(order);
                         OrderCoffee finalOrder = order;
-                        BackgroundJob.schedule(Instant.now().plus(type.getExecutionTimeMinuts(), ChronoUnit.MINUTES), () -> orderCoffeeJobExecution.executionQueue(finalOrder.getUuid()));
+                        String jobRunrId = BackgroundJob.schedule(
+                                Instant.now().plus(type.getExecutionTimeMinuts(), ChronoUnit.MINUTES),
+                                () -> orderCoffeeJobExecution.executionQueue(finalOrder.getUuid())
+                        ).toString();
+                        logger.info("#### Schedule execution job order coffee with jobRunrId:"+ jobRunrId + " orderId:"+ order.getUuid());
                     } catch (Exception e) {
                         logger.info(" schedule order coffee queue failed with error" + e.getMessage());
                     }

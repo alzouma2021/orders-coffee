@@ -20,7 +20,7 @@ class OrderCoffeeRepositoryImpl implements OrderCoffeeRepository {
 
     @Override
     public OrderCoffee save(OrderCoffee orderCoffee) {
-        return Optional.of(repository.saveAndFlush(OrderCoffeeEntity.toEntity(orderCoffee)))
+        return Optional.of(repository.save(OrderCoffeeEntity.toEntity(orderCoffee)))
                 .map(OrderCoffeeEntity::toDomain)
                 .orElseThrow(() -> new RuntimeException("create.order.coffee.failed"));
     }
