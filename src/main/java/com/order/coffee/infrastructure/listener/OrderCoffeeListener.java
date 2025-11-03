@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Component
@@ -35,7 +36,7 @@ public class OrderCoffeeListener {
     }
 
     @EventListener
-    @Async
+    @Async("defaultTaskExecutor")
     void handleOrderCoffee(OrderCoffeeEvent event) throws IOException {
         if(Objects.isNull(event) || Objects.isNull(event.getOrderCoffee())) return;
 
@@ -49,8 +50,6 @@ public class OrderCoffeeListener {
         }
     }
 
-
-
     private void sendNotification(OrderCoffee orderCoffee) throws IOException {
         SseEmitter emitter = sseEmitterService.getEmitters().get(orderCoffee.getType());
         if (Objects.nonNull(emitter)) {
@@ -62,8 +61,9 @@ public class OrderCoffeeListener {
                         orderCoffee.getCustomer().name(),
                         orderCoffee.getCustomer().phoneNumber(),
                         orderCoffee.getType().name(),
-                        orderCoffee.getStatus().name()
-                    ), MediaType.TEXT_EVENT_STREAM)
+                        orderCoffee.getStatus().name(),
+                        LocalDateTime.now().toString()
+                    ), MediaType.APPLICATION_JSON)
             );
         }
     }

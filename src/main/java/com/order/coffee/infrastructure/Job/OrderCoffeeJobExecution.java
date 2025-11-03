@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -33,11 +34,14 @@ public class OrderCoffeeJobExecution {
         try {
             OrderCoffee orderCoffee = orderCoffeeRepository.findOrderCoffeeById(uuid);
 
+            logger.info("#### Execute order coffee with orderCoffee:"+orderCoffee);
+
             orderCoffee.toReturn();
             orderCoffeeRepository.save(orderCoffee);
 
             SseEmitter emitter = sseEmitterService.getEmitters().get(orderCoffee.getType());
             if (Objects.nonNull(emitter)) {
+                logger.info("#### Send notification with coffeeType:"+orderCoffee.getType());
                 emitter.send(
                     SseEmitter.event()
                         .name(OrderStatus.RETURNED.name())
@@ -46,7 +50,8 @@ public class OrderCoffeeJobExecution {
                             orderCoffee.getCustomer().name(),
                             orderCoffee.getCustomer().phoneNumber(),
                             orderCoffee.getType().name(),
-                            orderCoffee.getStatus().name()
+                            orderCoffee.getStatus().name(),
+                            LocalDateTime.now().toString()
                         ), MediaType.APPLICATION_JSON)
                 );
             }

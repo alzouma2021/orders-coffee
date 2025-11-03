@@ -14,6 +14,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
+temp_auto_push.bat
 .idea
 *.iws
 *.iml
@@ -30,4 +31,5 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
+.gitignore
+branch_structure.json
