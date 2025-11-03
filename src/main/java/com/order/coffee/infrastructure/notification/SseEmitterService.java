@@ -14,12 +14,11 @@ public class SseEmitterService {
     private final Map<CoffeeType, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     public SseEmitter connect(CoffeeType type) {
-        SseEmitter emitter = new SseEmitter(60_000L);
+        SseEmitter emitter = new SseEmitter(300_000L);
         emitters.put(type,emitter);
 
         emitter.onCompletion(() -> emitters.remove(type));
         emitter.onTimeout(() -> emitters.remove(type));
-        emitter.onError((e) -> emitters.remove(type));
 
         return emitter;
     }

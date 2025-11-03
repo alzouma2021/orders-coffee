@@ -1,14 +1,12 @@
 package com.order.coffee.domain.model;
 
-import ch.qos.logback.core.util.StringUtil;
-
 public record Customer(String name, String phoneNumber) {
 
     public Customer{
-        if(StringUtil.isNullOrEmpty(name))
+        if(name == null || name.isBlank())
             throw new IllegalArgumentException("Customer name must be define");
 
-        if(StringUtil.isNullOrEmpty(phoneNumber))
+        if(phoneNumber == null || phoneNumber.isBlank())
             throw new IllegalArgumentException("Customer phone number must be define");
     }
 }
